@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Airport Information for {{icao}} {% endblock %}
+
+
+{% block page_content %}
+
+
+<div>
+  <h1>{{icao|upper}}</h1>
+  {% if location %}
+  <iframe id="Map"
+          width="100%"
+          height="400px"
+          style="border:0"
+          loading="lazy"
+          allowfullscreen
+          src="https://www.google.com/maps/embed/v1/view?key=AIzaSyAlUw37mfcCjibP3MXCixh0WxIq4L3V8ws
+    &center={{location.latitude}},{{location.longitude}}
+    &zoom=14&maptype=satellite
+">
+  </iframe>
+  {% endif %}
+
+  <div class="accordion">
+    {% if metar %}
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button id="Metar" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                aria-expanded="false" aria-controls="collapseOne">
+          {{metar.station_id}} Metar ({{metar.flight_rule.code}})
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+           data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+
+          <div class="row g-2">
+            <div class="col col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h5> {{metar.station_id}} ({{metar.flight_rule.code}})</h5>
+                  </div>
+                  {{metar.raw_text}}
+                </div>
+              </div>
+            </div>
+            <div class="col col-12 col-md-4">
+              {% if metar.wind %}
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h5><i class="bi bi-wind"></i> Wind</h5>
+                  </div>
+                  {{metar.wind.text}}
+                </div>
+              </div>
+            </div>
+            {%endif %}
+
+            {% if metar.visibility %}
+            <div class="col col-12 col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h5><i class="bi bi-eye"></i> Visibility</h5>
+                  </div>
+                  {{metar.visibility.text}}
+                </div>
+              </div>
+            </div>
+            {%endif %}
+
+            {% if metar.sky_condition %}
+            <div class="col col-12 col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h5><i class="bi bi-cloud"></i> Sky Conditions</h5>
+                  </div>
+                  {% for cond in metar.sky_condition %}
+                  <li>{{cond.text}}</li>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            {%endif %}
+
+            {% if metar.temperature %}
+            <div class="col col-12 col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h5><i class="bi bi-thermometer"></i>Temperature</h5>
+                  </div>
+                  {{ metar.temperature.text}}
+                </div>
+              </div>
+            </div>
+            {%endif %}
+
+            {% if metar.dewpoint %}
+            <div class="col col-12 col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h5><i class="bi bi-cloud-fog2"></i>Dewpoint</h5>
+                  </div>
+                  {{ metar.dewpoint.text}}
+                </div>
+              </div>
+            </div>
+            {%endif %}
+
+            {% if metar.altimeter %}
+            <div class="col col-12 col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h5><i class="bi bi-clock"></i>Altimeter</h5>
+                  </div>
+                  {{ metar.altimeter.text}}
+                </div>
+
+              </div>
+            </div>
+            {%endif %}
+
+            {% if metar.wx_codes %}
+            <div class="col col-12 col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h5><i class="bi bi-cloud-lightning-rain"></i> Weather</h5>
+                  </div>
+                  {% for wx in metar.wx_codes %}
+                  <li> {{ wx.text }}</li>
+                  {% endfor %}
+                </div>
+
+              </div>
+            </div>
+            {%endif %}
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+    {%endif%}
+    {%if taf%}
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+        <button id="TAF" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                aria-expanded="false" aria-controls="collapseOne">
+          {{taf.station_id}} TAF
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo"
+           data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+
+          <div class="row g-2">
+            <div class="col col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h5> {{taf.station_id}} </h5>
+                  </div>
+                  {{taf.raw_text}}
+                </div>
+              </div>
+            </div>
+            {% for fc in taf.forecasts %}
+            <div class="col col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h5>({{fc.flight_rules}}) {{fc.text}}</h5>
+                  </div>
+                  <div class="row g-2">
+                    <div class="col col-12 col-md-4">
+                      <strong>Wind: </strong> <br/> {{fc.wind.text}}
+                    </div>
+                    <div class="col col-12 col-md-4">
+                      <strong>Visibility: </strong> <br/> {{fc.visibility.text}}
+                    </div>
+                    <div class="col col-12 col-md-4">
+                      <strong>Sky Conditions: </strong> <br/>
+                      {% for sc in fc.sky_condition %}
+                      <li> {{sc.text}}</li>
+                      {% endfor %}
+                    </div>
+                    {% if fc.wx_codes %}
+                    <div class="col col-12 col-md-4">
+                      <strong>Weather: </strong> <br/>
+                      {% for wx in fc.wx_codes %}
+                      <li> {{wx.text}}</li>
+                      {% endfor %}
+                    </div>
+                    {% endif %}
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+    {%endif%}
+
+  </div>
+
+  <div>
+     {{content|safe}}
+  </div>
+
+
+  <script>
+    $document.ready(function() {
+        $('[data-spy="scroll"]').each(function() {
+          var $spy = $(this).scrollspy('refresh')
+        });
+  </script>
+
+  {% endblock %}
+
