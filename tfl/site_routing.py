@@ -1,6 +1,7 @@
 from starlette.routing import Route, Mount
 
 from tfl.site.views.airports import AirportsView
+from tfl.site.views.main import MainView
 from tfl.site.views.member import RegisterPage, LoginPage, ProfilePage
 
 member_page_routes = [
@@ -11,6 +12,8 @@ member_page_routes = [
 
 
 static_page_routes = [
-    Mount('/members', routes=member_page_routes, name='member'),
+    Route('/', MainView, name='main'),
+    Route('/members/register', RegisterPage, name='register'),
+    Route('/members/profile', ProfilePage, name='profile'),
     Route('/airports/{icao}', AirportsView)
 ]

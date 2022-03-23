@@ -5,8 +5,12 @@
 
 {% block page_content %}
 
+<div class="full-image" style="background-image: url('{{aerial}}');">
+  <h1>{{icao|upper}}</h1>
+</div>
 
-<div>
+<div class="container">
+
   <h1>{{icao|upper}}</h1>
   {% if location %}
   <iframe id="Map"

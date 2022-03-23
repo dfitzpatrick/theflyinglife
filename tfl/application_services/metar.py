@@ -8,6 +8,7 @@ from dateutil.parser import parse
 from tfl.application_services.adds import ADDSPolling, PollingFile
 from tfl.domain.exceptions import EntityExistsError, EntityNotFoundError
 from tfl.domain.factories.weather import WeatherFactory
+from tfl.domain.interfaces.weather import IMetarRepository
 from tfl.domain.services.weather import string_to_decimal_rounded
 from tfl.domain.weather import *
 from tfl.domain.weather_translations import *
@@ -23,7 +24,7 @@ class MetarService:
     Service for METAR Functionality and updating of the repository.
     """
 
-    def __init__(self, repo: MetarRepository):
+    def __init__(self, repo: IMetarRepository):
         self._repo = repo
         self.poller = ADDSPolling()
         self.poller.add_file('metars.cache.xml.gz', self._file_updated)

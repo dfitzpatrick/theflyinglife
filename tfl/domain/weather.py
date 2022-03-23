@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Optional, List
 from datetime import datetime
-from tfl.domain.core import ValueObject, Aggregate
+from tfl.domain.core import ValueObject, Aggregate, Form
 from tfl.domain.services.weather import translate_sky_condition_abbr_to_text, translate_flight_rule_abbr_to_text
 from decimal import Decimal, ROUND_UP
 
@@ -214,8 +214,6 @@ class FM(TAFForecast):
         return s
 
 
-
-
 class Metar(Aggregate):
     time: datetime
     raw_text: str
@@ -231,3 +229,15 @@ class Metar(Aggregate):
     sky_condition: List[SkyCondition]
     flight_rule: Optional[FlightRule]
     wx_codes: List[WxCode]
+
+
+
+class ICAO(str):
+
+    def __init__(self, value):
+        str.__init__(value)
+
+
+class ICAOSearchForm(Form):
+    icao: ICAO
+

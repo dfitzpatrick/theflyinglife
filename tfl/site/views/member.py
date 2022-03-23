@@ -31,7 +31,11 @@ class RegisterPage(HTTPEndpoint):
         if form.is_valid:
             try:
                 await register_member(form.model)
-                #RedirectResponse(request.url_for('members:login'))
+                await login_member(request, Credentials(
+                    email=form.model.email,
+                    password=form.model.password
+                ))
+                return RedirectResponse(request.url_for('profile'), status_code=302)
             except MemberExists:
                 message = 'This account already exists'
 
@@ -66,9 +70,9 @@ class LoginPage(HTTPEndpoint):
 
 class ProfilePage(HTTPEndpoint):
 
-    @requires('authenticated')
     async def get(self, request: Request):
-        return templates.TemplateResponse('member/login.html', {
+        return templates.TemplateResponse('member/profile.html', {
+            'request': request,
             'member': request.user
         })
 

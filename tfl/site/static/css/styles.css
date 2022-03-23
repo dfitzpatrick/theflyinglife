@@ -1,3 +1,6 @@
+body {
+  margin: 0;
+}
 .back {
   background: #4984b8;
   width: 100%;
@@ -27,3 +30,21 @@ div.content {
   display: table-cell;
   vertical-align: middle;
 }
+
+.full-image {
+    width:100vw;
+    height: 100vh;
+    background: green;
+    background-size: cover;
+}
+.full-image h1 {
+  position: absolute;
+  top: 20vh;
+  left: 10vh;
+  color: #000;
+  text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
+  font: 120px "Verdana";
+}
+
+
+

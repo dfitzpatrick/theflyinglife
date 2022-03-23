@@ -10,7 +10,7 @@ T = TypeVar("T")
 
 class InMemoryMemberRepository(IMemberRepository, Generic[T]):
 
-    def __init__(self, id_factory: List = range(1, 1000)):
+    def __init__(self, id_factory: List = range(1, 100)):
         self.members: Dict[T, Member] = {}
         self.id_factory = list(id_factory)
 

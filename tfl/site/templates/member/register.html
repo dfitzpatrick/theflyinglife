@@ -27,7 +27,7 @@
         {{form}}
       </div>
       <form method="post">
-        <input name="csrf_key" type="hidden" value="{{ form.csrf }}" />
+        <input name="pf_csrf" type="hidden" value="{{ form.csrf }}" />
         <div class="form-group">
           {{input('email', 'Email', type='email') }}
         </div>

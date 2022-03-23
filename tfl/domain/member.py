@@ -83,6 +83,16 @@ class Member(Aggregate, BaseUser):
     looking_to_fly: bool = False
     looking_for_partners: bool = False
 
+    def update_home_airport(self):
+        pass
+
+    def look_for_people_to_fly_with(self):
+        pass
+
+    def look_for_partners(self):
+        pass
+
+
 
 class UserCreateForm(Form):
     email: EmailStr

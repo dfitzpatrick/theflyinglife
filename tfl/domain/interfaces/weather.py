@@ -1,5 +1,20 @@
+from asyncio import Protocol
+
 from tfl.domain.weather import Metar, TAF
 from abc import ABC, abstractmethod
+
+
+
+
+
+class IFacilityWeather(Protocol):
+
+    async def taf(self, icao: str) -> TAF:
+        ...
+
+    async def metar(self, icao: str) -> Metar:
+        ...
+
 
 
 class IMetarRepository(ABC):
