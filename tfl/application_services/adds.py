@@ -122,6 +122,7 @@ class ADDSPolling:
         -------
         None
         """
+        log.info(f"Fetching listing for {self.path}")
         cwd, files = htmllistparse.fetch_listing(self.path)
         files = self._index_listing_results(files)
         for polling_file in self._polling_files:
