@@ -10,7 +10,7 @@ from passlib.context import CryptContext
 
 password_handler = CryptContext(schemes=["bcrypt"], deprecated="auto")
 taf_repository = TAFRepository()
-metar_repository = MetarRedisRepository()
+metar_repository = MetarRepository()
 member_repository = InMemoryMemberRepository()
 metar_service = MetarService(metar_repository)
 taf_service = TafService(taf_repository)

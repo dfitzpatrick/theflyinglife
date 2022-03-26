@@ -132,7 +132,7 @@
             {%endif %}
 
             {% if metar.wx_codes %}
-            <div class="col col-12 col-md-4">
+            <div class="col col-12 col-md-12">
               <div class="card">
                 <div class="card-body">
                   <div class="card-title">
@@ -140,6 +140,22 @@
                   </div>
                   {% for wx in metar.wx_codes %}
                   <li> {{ wx.text }}</li>
+                  {% endfor %}
+                </div>
+
+              </div>
+            </div>
+            {%endif %}
+
+             {% if metar.remarks %}
+            <div class="col col-12 col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h5><i class="bi bi-journal-text"></i> Remarks</h5>
+                  </div>
+                  {% for rmk in metar.remarks %}
+                  <li> {{ rmk.text }}</li>
                   {% endfor %}
                 </div>
 

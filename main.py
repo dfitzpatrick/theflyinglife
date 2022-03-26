@@ -21,7 +21,7 @@ sentry_sdk.init(
 
 app = FastAPI(routes=static_page_routes, middleware=installed_middleware)
 
-app.include_router(weather_router)
+app.include_router(weather_router, prefix='/api/v1')
 app.mount("/static", StaticFiles(directory="./tfl/site/static"), name="static")
 
 

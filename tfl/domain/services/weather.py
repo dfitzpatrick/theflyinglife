@@ -7,6 +7,7 @@ from tfl.domain.weather_translations import *
 def string_to_decimal_rounded(unit: str, precision='0.1', strategy=ROUND_UP) -> Decimal:
     return Decimal(unit).quantize(Decimal(precision), strategy)
 
+
 def translate_sky_condition_abbr_to_text(abbr: str) -> str:
     return wx_sky_conditions.get(abbr, 'Unknown Abbreviation')
 

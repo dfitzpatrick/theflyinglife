@@ -4,6 +4,7 @@ from tfl.instances import member_service
 from tfl.instances import auth_service
 from fastapi.requests import Request
 
+
 async def register_member(model: UserCreateForm) -> None:
     """
     Domain service that will handle everything with registering a user.

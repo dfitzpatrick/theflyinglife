@@ -125,6 +125,11 @@ class WxCode(ValueObject):
     phenomenons: List[WxPhenomenon]
 
 
+class Remark(ValueObject):
+    code: str
+    text: str
+
+
 class TAFForecast(Aggregate):
     valid_from: datetime
     valid_to: datetime
@@ -229,6 +234,7 @@ class Metar(Aggregate):
     sky_condition: List[SkyCondition]
     flight_rule: Optional[FlightRule]
     wx_codes: List[WxCode]
+    remarks: List[Remark]
 
 
 

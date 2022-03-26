@@ -1,5 +1,6 @@
 import io
 from gzip import GzipFile
+from typing import Callable, Union
 
 import aiohttp
 import xmltodict
@@ -9,12 +10,14 @@ from tfl.application_services.adds import ADDSPolling, PollingFile
 from tfl.domain.exceptions import EntityExistsError, EntityNotFoundError
 from tfl.domain.factories.weather import WeatherFactory
 from tfl.domain.interfaces.weather import IMetarRepository
+from tfl.domain.remarks import remarks_pipeline
 from tfl.domain.services.weather import string_to_decimal_rounded
 from tfl.domain.weather import *
 from tfl.domain.weather_translations import *
 from tfl.infrastructure.metar import MetarRepository
+import re
 
-
+REMARKS_PATTERN = re.compile(r"RMK (.+)")
 class BadResponseError(Exception):
     pass
 
@@ -94,7 +97,9 @@ class MetarService:
         if altimeter is not None:
             inhg = string_to_decimal_rounded(altimeter, precision='0.01')
             altimeter = AltimeterSetting(inhg=inhg)
-
+        remark_match = re.search(REMARKS_PATTERN, m['raw_text'])
+        remarks_text = remark_match.groups()[0] if remark_match is not None else ''
+        remarks = self.get_remarks(remarks_text, remarks_pipeline)
         metar = Metar(
             raw_text=m['raw_text'],
             station_id=m['station_id'],
@@ -108,8 +113,29 @@ class MetarService:
             wx_codes=wx_codes,
             sky_condition=sky_condition,
             flight_rule=flight_rule,
+            remarks=remarks
 
         )
         return metar
+
+    def get_remarks(self, remark_str: str, callables: List[Callable[[str], Union[Optional[Remark], List[Remark]]]]) -> List[Remark]:
+        remarks = []
+        for func in callables:
+            if remark_str == '':
+                return remarks
+            value = func(remark_str)
+            if isinstance(value, list):
+                for v in value:
+                    remarks.append(v)
+                    remark_str = remark_str.replace(v.code, '')
+            if isinstance(value, Remark):
+                remarks.append(value)
+                remark_str = remark_str.replace(value.code, '')
+        return remarks
+
+
+
+
+
 
 

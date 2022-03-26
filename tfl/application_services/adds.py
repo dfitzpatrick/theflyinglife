@@ -12,6 +12,7 @@ log = logging.getLogger(__name__)
 
 DEFAULT_ADDS_PATH = 'https://aviationweather.gov/adds/dataserver_current/current/'
 
+
 @dataclass
 class PollingFile:
     path: str
@@ -22,6 +23,7 @@ class PollingFile:
     @property
     def filename(self):
         return self.path + self.name
+
 
 class ADDSPolling:
     """
@@ -93,7 +95,6 @@ class ADDSPolling:
             size=file_entry.size,
             description=file_entry.description
         )
-
 
     def _index_listing_results(self, listings: List[htmllistparse.FileEntry]) -> Dict[str, htmllistparse.FileEntry]:
         """

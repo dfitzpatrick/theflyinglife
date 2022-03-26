@@ -12,8 +12,8 @@ member_page_routes = [
 
 
 static_page_routes = [
-    Route('/', MainView, name='main'),
-    Route('/members/register', RegisterPage, name='register'),
-    Route('/members/profile', ProfilePage, name='profile'),
+    #Route('/', MainView, name='main'),
+    #Route('/members/register', RegisterPage, name='register'),
+    #Route('/members/profile', ProfilePage, name='profile'),
     Route('/airports/{icao}', AirportsView)
 ]
