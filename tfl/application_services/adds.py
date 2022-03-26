@@ -122,7 +122,7 @@ class ADDSPolling:
         -------
         None
         """
-        log.info(f"Fetching listing for {self.path}")
+        log.debug(f"Fetching listing for {self.path}")
         cwd, files = htmllistparse.fetch_listing(self.path)
         files = self._index_listing_results(files)
         for polling_file in self._polling_files:
@@ -162,6 +162,7 @@ class ADDSPolling:
         """
 
         while True:
+            log.debug(f"ADDS Polling {kwargs}")
             await self._poll(**kwargs)
             await asyncio.sleep(self.delay)
 
