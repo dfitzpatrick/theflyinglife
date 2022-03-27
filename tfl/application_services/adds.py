@@ -180,6 +180,7 @@ class ADDSPolling:
         files = ', '.join(pf.name for pf in self._polling_files)
         log.info(f"ADDS Polling Started for files [{files}]")
         self.task = self.loop.create_task(self._task_loop(**kwargs))
+        log.info(f"Task created {self.task}")
         self.task.add_done_callback(self._task_finished)
 
     async def stop(self):
