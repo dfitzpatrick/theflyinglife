@@ -16,7 +16,7 @@ class Runway(ValueObject):
     @property
     def text(self):
         light_mod = "" if self.lights else "No "
-        return f"{0}/{1} {3}x{4}' {5} -- {6}".format(
+        return "{0}/{1} {2}x{3}' {4} -- {5}".format(
             self.ident1,
             self.ident2,
             self.length_ft,
