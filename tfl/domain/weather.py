@@ -136,6 +136,7 @@ class TAFForecast(Aggregate):
     sky_condition: List[SkyCondition]
     wind: Wind
     visibility: Optional[Visibility]
+    wx_codes: List[WxCode]
 
 
     @property
