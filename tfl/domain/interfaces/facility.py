@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod, ABC
 
 from tfl.domain.facilities import Airport
 
@@ -11,12 +11,4 @@ class IAirportRepository(ABC):
 
     @abstractmethod
     async def create(self, airport: Airport) -> None:
-        pass
-
-    @abstractmethod
-    async def update(self, airport: Airport) -> Airport:
-        pass
-
-    @abstractmethod
-    async def delete(self, icao: str) -> None:
         pass

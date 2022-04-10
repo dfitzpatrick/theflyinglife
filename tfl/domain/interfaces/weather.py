@@ -1,5 +1,6 @@
 from asyncio import Protocol
 
+from tfl.domain.facilities import Airport
 from tfl.domain.weather import Metar, TAF
 from abc import ABC, abstractmethod
 
@@ -53,4 +54,5 @@ class ITAFRepository(ABC):
     @abstractmethod
     async def delete(self, taf: TAF) -> None:
         pass
+
 

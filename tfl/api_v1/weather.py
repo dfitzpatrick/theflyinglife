@@ -1,6 +1,6 @@
 from fastapi.routing import APIRouter
 
-from tfl.instances import metar_service, taf_service
+from tfl.instances import metar_service, taf_service, airport_repository
 
 router = APIRouter()
 
@@ -15,3 +15,9 @@ async def metar_get(icao: str):
 async def taf_get(icao: str):
     taf = await taf_service.taf(icao)
     return taf
+
+
+@router.get('/airport/{icao}')
+async def airport_get(icao: str):
+    airport = await airport_repository.find(icao)
+    return airport

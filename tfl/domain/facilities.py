@@ -10,7 +10,7 @@ class Runway(ValueObject):
     ident2: str
     length_ft: int
     lights: bool
-    surface: str
+    surface: Optional[str]
     width_ft: int
 
     @property
@@ -27,19 +27,19 @@ class Runway(ValueObject):
 
 
 class Airport(Aggregate):
-    city: str
+    city: Optional[str]
     country: str
-    elevation_ft: int
-    elevation_m: int
+    elevation_ft: Optional[int]
+    elevation_m: Optional[int]
     iata: Optional[str]
-    icao: Optional[str]
+    icao: str
     latitude: Decimal
     longitude: Decimal
     name: str
     note: Optional[str]
     reporting: bool
     runways: Optional[List[Runway]]
-    state: str
+    state: Optional[str]
     type: str
     website: Optional[str]
     wiki: Optional[str]
