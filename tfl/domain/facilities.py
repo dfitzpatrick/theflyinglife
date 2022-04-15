@@ -26,6 +26,21 @@ class Runway(ValueObject):
         )
 
 
+
+
+
+class FAAPlate(ValueObject):
+    tpp_cycle: int
+    icao: str
+    code: str
+    name: str
+    pdf_name: str
+
+    @property
+    def plate_url(self):
+        return f"https://aeronav.faa.gov/d-tpp/{self.tpp_cycle}/{self.pdf_name}"
+
+
 class Airport(Aggregate):
     city: Optional[str]
     country: str
@@ -43,4 +58,4 @@ class Airport(Aggregate):
     type: str
     website: Optional[str]
     wiki: Optional[str]
-
+    plates: List[FAAPlate] = []
