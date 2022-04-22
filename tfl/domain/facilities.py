@@ -13,6 +13,7 @@ class Runway(ValueObject):
     surface: Optional[str]
     width_ft: int
 
+
     @property
     def text(self):
         light_mod = "" if self.lights else "No "

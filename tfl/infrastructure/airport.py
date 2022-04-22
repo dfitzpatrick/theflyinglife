@@ -54,7 +54,6 @@ def parse_raw_plate_data(path: pathlib.Path) -> Dict[str, List[FAAPlate]]:
                     if icao not in container.keys():
                         container[icao] = []
                     for r in enforce_list(o['record']):
-                        print(r)
                         if not isinstance(r, dict):
                             continue
                         plate = FAAPlate(
@@ -73,7 +72,6 @@ def parse_raw_plate_data(path: pathlib.Path) -> Dict[str, List[FAAPlate]]:
                 for r in enforce_list(city['airport_name']['record']):
                     if not isinstance(r, dict):
                         continue
-                    print(r)
                     plate = FAAPlate(
                         tpp_cycle=cycle,
                         icao=icao,
