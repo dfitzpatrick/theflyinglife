@@ -1,5 +1,7 @@
 from typing import Dict, Optional
 
+from pydantic import BaseModel
+
 from tfl.domain.exceptions import EntityExistsError
 from tfl.domain.facilities import Airport
 from tfl.domain.interfaces.facility import IAirportRepository

@@ -179,6 +179,7 @@ class TAF(Aggregate):
     bulletin_time: datetime
     location: Optional[Point]
     forecasts: List[TAFForecast]
+    last_polling_succeeded: bool
 
 
 class PROB(TAFForecast):
@@ -236,6 +237,7 @@ class Metar(Aggregate):
     flight_rule: Optional[FlightRule]
     wx_codes: List[WxCode]
     remarks: List[Remark]
+    last_polling_succeeded: bool
 
 
 

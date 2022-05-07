@@ -71,7 +71,8 @@ class TafService:
             valid_to=valid_to,
             bulletin_time=bulletin_time,
             location=location,
-            forecasts=forecasts
+            forecasts=forecasts,
+            last_polling_succeeded=self.poller.last_polling_succeeded
         )
         return taf
 

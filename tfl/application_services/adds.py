@@ -49,6 +49,7 @@ class ADDSPolling:
         self.task: Optional[asyncio.Task] = None
         self.delay = delay
         self._polling_files: List[PollingFile] = []
+        self.last_polling_succeeded = True
 
     def add_file(self, name: str, callback: Callable):
         """
@@ -122,16 +123,23 @@ class ADDSPolling:
         -------
         None
         """
-        log.debug(f"Fetching listing for {self.path}")
-        cwd, files = htmllistparse.fetch_listing(self.path)
-        files = self._index_listing_results(files)
-        for polling_file in self._polling_files:
-            file_entry = files.get(polling_file.name)
-            if file_entry is None:
-                continue
-            if polling_file.last_polled is None or file_entry.modified > polling_file.last_polled:
-                # call back
-                await polling_file.callback(polling_file, **kwargs)
+        try:
+            log.debug(f"Fetching listing for {self.path}")
+            cwd, files = htmllistparse.fetch_listing(self.path)
+            files = self._index_listing_results(files)
+            for polling_file in self._polling_files:
+                file_entry = files.get(polling_file.name)
+                if file_entry is None:
+                    continue
+                if polling_file.last_polled is None or file_entry.modified > polling_file.last_polled:
+                    # call back
+                    await polling_file.callback(polling_file, **kwargs)
+        except:
+            self.last_polling_succeeded = False
+            await asyncio.sleep(60)
+            await self._poll(**kwargs)
+        else:
+            self.last_polling_succeeded = True
 
     def _task_finished(self, future: asyncio.Future):
         """

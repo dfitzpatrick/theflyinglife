@@ -113,7 +113,8 @@ class MetarService:
             wx_codes=wx_codes,
             sky_condition=sky_condition,
             flight_rule=flight_rule,
-            remarks=remarks
+            remarks=remarks,
+            last_polling_succeeded=self.poller.last_polling_succeeded
 
         )
         return metar
