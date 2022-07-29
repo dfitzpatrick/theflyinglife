@@ -1,5 +1,11 @@
 from __future__ import annotations
+
+import re
 from decimal import Decimal, ROUND_UP
+from typing import List, Dict, Tuple
+
+from fuzzywuzzy import process, fuzz
+
 from tfl.domain.core import HeadAndTailString
 from tfl.domain.weather_translations import *
 
@@ -44,3 +50,25 @@ def merge_forecasts(child, parent):
     return type(child)(
         **kwargs
     )
+
+
+def get_string_ratios(input: str, comparable: Tuple[str]) -> List[Tuple[str, int]]:
+    return  fuzz.partial_ratio(input, comparable, scorer=fuzz.token_sort_ratio)
+
+
+def get_best_plates(text: str, comparables: str | List[str]) -> List[str]:
+    def sanitize_plate_name(name: str):
+        # To help with matching, remove stuff out of the name as much as possible
+        pattern = r"\s(runway|rwy|or)\s"
+        name = str(re.sub(pattern, ' ', name))
+        return name
+    comparable_mapping: Dict[str, str] = {sanitize_plate_name(name):name for name in comparables}
+    ratios = get_string_ratios(sanitize_plate_name(text), tuple(comparable_mapping.keys()))
+    print(f"Input is: {text}")
+    print(f"Comparing to {' | '.join(comparable_mapping.keys())}")
+    print("Ratios are")
+    print(ratios)
+    highest_ratio = ratios[0][1]
+    threshold = 7
+    return [comparable_mapping[r[0]] for r in ratios if highest_ratio - r[1] < threshold]
+
