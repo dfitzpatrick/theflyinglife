@@ -119,3 +119,6 @@ class AirportRepository(IAirportRepository):
             del self.repo[icao]
         except KeyError:
             raise EntityNotFoundError(f"{icao} not found.")
+
+    async def all(self) -> List[Airport]:
+        return list(self.repo.values())

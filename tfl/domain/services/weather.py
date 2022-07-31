@@ -53,7 +53,7 @@ def merge_forecasts(child, parent):
 
 
 def get_string_ratios(input: str, comparable: Tuple[str]) -> List[Tuple[str, int]]:
-    return  fuzz.partial_ratio(input, comparable, scorer=fuzz.token_sort_ratio)
+    return process.extract(input, comparable, scorer=fuzz.partial_ratio)
 
 
 def get_best_plates(text: str, comparables: str | List[str]) -> List[str]:

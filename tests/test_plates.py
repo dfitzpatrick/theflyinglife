@@ -284,7 +284,7 @@ def test_string_ratios():
     assert False
 
 def test_plate_ratios():
-    test_string = "ils"
+    test_string = "vor"
     comparables = ["VOR OR TACAN RWY 30", "ILS OR LOC RWY 30", "ILS OR LOC RWY 26"]
     comparables = list(map(str.lower, [d.name.lower() for d in data]))
     ratios = get_best_plates(test_string, comparables)
