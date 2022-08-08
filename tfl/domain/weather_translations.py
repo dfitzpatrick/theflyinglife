@@ -50,7 +50,7 @@ wx_sky_conditions = {
     'BKN': 'Broken Layer',
     'OVC': 'Overcast Layer',
     'OVX': 'Sky Obscured',
-    'NSC': '?????????'
+    'NSC': 'No Significant Clouds'
 }
 wx_flight_rules = {
     'VFR': 'Visual Flight Rules',
