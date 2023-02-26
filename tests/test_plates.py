@@ -5,7 +5,8 @@ import pathlib
 
 from tfl.domain.facilities import FAAPlate
 from tfl.domain.services.weather import get_string_ratios, get_best_plates
-from tfl.infrastructure.airport import load_raw_plate_data, parse_raw_plate_data
+from tfl.infrastructure.airport import parse_raw_plate_data
+from tfl.domain.services.dtpp import load_raw_plate_data
 
 path = str(pathlib.Path(__file__).parents[1].resolve() / "data/d-tpp_Metafile.xml")
 data = json.loads("""[

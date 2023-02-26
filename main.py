@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from tfl.api_v1.weather import router as weather_router
+from tfl.events import on_dtpp_change
 from tfl.instances import metar_service, taf_service
 from tfl.middleware import installed_middleware
 from tfl.site_routing import static_page_routes
@@ -10,6 +11,8 @@ import os
 import sys
 from logging import StreamHandler, FileHandler
 import logging
+from tfl.instances import dtpp_service
+
 BASE_DIR = os.path.normpath(os.path.dirname(os.path.realpath(__file__)))
 
 handler_console = StreamHandler(stream=sys.stdout)
@@ -54,5 +57,9 @@ async def startup_event():
     log.info("Starting Metar/TAF Pollers")
     await metar_service.poller.start()
     await taf_service.poller.start()
+    log.info("Starting DTPP Service")
+    dtpp_service.register_callback(on_dtpp_change)
+    dtpp_service.start()
+
 
 

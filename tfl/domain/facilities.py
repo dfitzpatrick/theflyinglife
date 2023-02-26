@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import Optional, List
 from decimal import Decimal
 from tfl.domain.core import Aggregate, ValueObject
@@ -27,8 +28,15 @@ class Runway(ValueObject):
         )
 
 
+class DTPPHeader(ValueObject):
+    cycle: int
+    valid_from: datetime
+    valid_to: datetime
 
-
+    @property
+    def is_valid(self):
+        now = datetime.now(timezone.utc)
+        return self.valid_from < now < self.valid_to
 
 class FAAPlate(ValueObject):
     tpp_cycle: int

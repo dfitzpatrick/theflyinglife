@@ -39,7 +39,7 @@ class Aggregate(TFLModel):
     ...
 
     class Config:
-        frozen = True
+        frozen = False
 
 
 class Form(TFLModel):

@@ -1,13 +1,14 @@
 import json
 import pathlib
-from typing import Optional, Dict, List, Any
-
-import xmltodict
+from typing import Optional, Dict, List
 
 from tfl.domain.exceptions import EntityExistsError, EntityNotFoundError
 from tfl.domain.facilities import Airport, FAAPlate
 from tfl.domain.interfaces.facility import IAirportRepository
 import logging
+
+from tfl.domain.services.dtpp import load_raw_plate_data
+
 log = logging.getLogger(__name__)
 BASE_DIR = pathlib.Path(__file__).parent.resolve()
 AIRPORTS_PATH = BASE_DIR.parents[1].resolve() / "data/airports.json"
@@ -24,13 +25,6 @@ def load_airport_data(path, plates=None) -> Dict[str, Airport]:
 
             container[icao.upper()] = airport
     return container
-
-
-def load_raw_plate_data(path: pathlib.Path) -> Dict[str, Any]:
-    with open(path, 'r', encoding='utf-8') as f:
-        data = xmltodict.parse(f.read())
-        return data
-
 
 
 def enforce_list(item):
@@ -88,12 +82,14 @@ class AirportRepository(IAirportRepository):
 
     def __init__(self):
         blah = AIRPORTS_PATH
-        self.repo: Dict[str, Airport] = load_airport_data(AIRPORTS_PATH, self._add_plate_data())
+        self.repo: Dict[str, Airport] = load_airport_data(AIRPORTS_PATH)
 
-
-    def _add_plate_data(self):
-        plates = parse_raw_plate_data(TPP_PATH)
-        return plates
+    def load_dtpp(self, path: pathlib.Path):
+        dtpp = parse_raw_plate_data(path)
+        for icao, plates in dtpp.items():
+            if icao in self.repo.keys():
+                self.repo[icao].plates = plates
+        log.info("DTPP Plate Data loaded to Airport Repository")
 
 
     async def create(self, airport: Airport) -> None:
