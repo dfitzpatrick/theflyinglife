@@ -5,6 +5,9 @@ from tfl.domain.services.weather import head_and_tail, merge_forecasts, string_t
 
 from tfl.domain.weather import *
 from tfl.domain.weather_translations import *
+import logging
+
+log = logging.getLogger(__name__)
 
 WIND_DIRECTION = 'wind_dir_degrees'
 WIND_SPEED = 'wind_speed_kt'
@@ -46,14 +49,16 @@ class WeatherFactory:
     @staticmethod
     def wind(data: t.Dict[str, t.Any]) -> Wind:
         dir = data.get(WIND_DIRECTION, 0)
+        if dir == "VRB":
+            dir = 0
         at = data.get(WIND_SPEED, 0)
         gust = data.get(WIND_GUST, 0)
-        return Wind(
+        wind = Wind(
             dir=dir,
             at=at,
             gusting=gust,
-
         )
+        return wind
 
     @staticmethod
     def sky_condition(data: t.Dict[str, t.Any]) -> t.List[SkyCondition]:
@@ -80,6 +85,9 @@ class WeatherFactory:
         vis = data.get(VISIBILITY)
         if vis is None:
             return
+        # Fix for visibility to allow +
+        if vis[-1] == "+":
+            vis = vis[0:-1]
         sm = string_to_decimal_rounded(vis)
         return Visibility(sm=sm)
 
@@ -118,8 +126,10 @@ class WeatherFactory:
             prob = f.get('probability', 0)
             time_becoming = f.get('time_becoming')
             wx_codes = WeatherFactory.wx_codes(f.get('wx_string', ''))
-
-
+        
+            # New Site update that drops time_becoming. Quick fix to verify schema change.
+            if time_becoming is None:
+                time_becoming = fc_from
             temp = {
                 None: FM,
                 'PROB': PROB,
@@ -139,15 +149,18 @@ class WeatherFactory:
             return merge_forecasts(temp, parent)
 
         forecasts = data.get('forecast', [])
+       
         container = []
         if isinstance(forecasts, list):
             parent = None
             for fc in forecasts:
+               
                 obj = _make(fc, parent)
                 container.append(obj)
                 parent = obj
         if isinstance(forecasts, dict):
             container.append(_make(forecasts))
+      
         return container
 
 

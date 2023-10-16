@@ -6,10 +6,13 @@ import xmltodict
 import io
 from tfl.domain.weather import *
 from tfl.domain.factories.weather import WeatherFactory
-import typing as t
+from typing import Any, Optional, Dict
+
 from dateutil.parser import parse
 from tfl.application_services.adds import ADDSPolling, PollingFile
+import logging
 
+log = logging.getLogger(__name__)
 
 class BadResponseError(Exception):
     pass
@@ -23,6 +26,7 @@ class TafService:
         self.poller.add_file('tafs.cache.xml.gz', self.file_updated)
 
     async def file_updated(self, polling_file: PollingFile):
+        log.debug("In taf update callback")
         gz = await self._fetch_taf(polling_file.filename)
         await self._parse_taf_gzip(gz)
 
@@ -38,7 +42,6 @@ class TafService:
             data = data['response']['data']['TAF']
         except KeyError:
             raise BadResponseError("Invalid Response from aviationweather.gov")
-
         for t in data:
             taf = self._parse_taf(t)
             try:
@@ -47,22 +50,24 @@ class TafService:
                 await self._repo.update(taf)
 
 
-    def _parse_taf(self, t: t.Dict[str, t.Any]) -> TAF:
+    def _parse_taf(self, t: Dict[str, Any]) -> TAF:
         location = None
         forecasts = []
         raw_text = t['raw_text']
         station_id = t['station_id']
         issue_time = parse(t['issue_time'])
+        
         bulletin_time = parse(t['bulletin_time'])
         valid_from = parse(t['valid_time_from'])
         valid_to = parse(t['valid_time_to'])
         latitude = t.get('latitude')
         longitude = t.get('longitude')
+        
         if latitude is not None and longitude is not None:
             location = Point(latitude=latitude, longitude=longitude)
 
+        
         forecasts = WeatherFactory.forecasts(t)
-
         taf = TAF(
             raw_text=raw_text,
             station_id=station_id,
@@ -76,7 +81,7 @@ class TafService:
         )
         return taf
 
-    async def taf(self, icao) -> t.Optional[TAF]:
+    async def taf(self, icao) -> Optional[TAF]:
         try:
             return await self._repo.find(icao)
         except EntityNotFoundError:

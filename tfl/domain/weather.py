@@ -25,6 +25,7 @@ class Wind(ValueObject):
 
 class Visibility(ValueObject):
     sm: Decimal
+    modifier: Optional[str] = None
 
     @property
     def km(self):
@@ -33,7 +34,8 @@ class Visibility(ValueObject):
 
     @property
     def text(self):
-        return "{} sm ({} km)".format(self.sm, self.km)
+        mod = "More than" if self.modifier =="+" else ""
+        return "{} {} sm ({} km)".format(mod, self.sm, self.km)
 
 
 class SkyCondition(ValueObject):

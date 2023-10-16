@@ -3,7 +3,9 @@ from typing import Dict, Optional
 from tfl.domain.weather import TAF
 from tfl.domain.exceptions import EntityNotFoundError, EntityExistsError
 from tfl.domain.interfaces.weather import ITAFRepository
+import logging
 
+log = logging.getLogger(__name__)
 
 class TAFRepository(ITAFRepository):
 

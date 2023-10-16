@@ -10,7 +10,8 @@ import htmllistparse
 
 log = logging.getLogger(__name__)
 
-DEFAULT_ADDS_PATH = 'https://aviationweather.gov/adds/dataserver_current/current/'
+#DEFAULT_ADDS_PATH = 'https://aviationweather.gov/adds/dataserver_current/current/'
+DEFAULT_ADDS_PATH = 'https://aviationweather.gov/data/cache/'
 
 
 @dataclass
@@ -124,17 +125,21 @@ class ADDSPolling:
         None
         """
         try:
-            log.debug(f"Fetching listing for {self.path}")
-            cwd, files = htmllistparse.fetch_listing(self.path)
-            files = self._index_listing_results(files)
+            
+            #cwd, files = htmllistparse.fetch_listing(self.path)
+            #files = self._index_listing_results(files)
             for polling_file in self._polling_files:
-                file_entry = files.get(polling_file.name)
-                if file_entry is None:
-                    continue
-                if polling_file.last_polled is None or file_entry.modified > polling_file.last_polled:
+                log.debug(f"Fetching listing for {polling_file.filename}")
+                #file_entry = files.get(polling_file.name)
+                #if file_entry is None:
+                #    continue
+                #if polling_file.last_polled is None or file_entry.modified > polling_file.last_polled:
                     # call back
-                    await polling_file.callback(polling_file, **kwargs)
+                    #await polling_file.callback(polling_file, **kwargs)
+                # Quick fix to just poll cache files on delay due to aviationweather.gov change 10/16/23
+                await polling_file.callback(polling_file, **kwargs)
         except:
+            raise
             self.last_polling_succeeded = False
             await asyncio.sleep(60)
             await self._poll(**kwargs)
