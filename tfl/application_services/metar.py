@@ -16,6 +16,9 @@ from tfl.domain.weather import *
 from tfl.domain.weather_translations import *
 from tfl.infrastructure.metar import MetarRepository
 import re
+import logging
+
+log = logging.getLogger(__name__)
 
 REMARKS_PATTERN = re.compile(r"RMK (.+)")
 class BadResponseError(Exception):
@@ -68,6 +71,9 @@ class MetarService:
             data = data['response']['data']['METAR']
         except KeyError:
             raise BadResponseError("Invalid Response from aviationweather.gov")
+        except EOFError:
+            log.error("EOF Error from Gzip Stream on TAF. Ignoring")
+            return
 
         for m in data:
             metar = self._parse_metar(m)

@@ -36,12 +36,15 @@ class TafService:
             data = io.BytesIO(await response.read())
             return GzipFile(fileobj=data)
 
-    async def _parse_taf_gzip(self, gz_metar: GzipFile):
-        data = xmltodict.parse(gz_metar.read())
+    async def _parse_taf_gzip(self, gz_taf: GzipFile):
+        data = xmltodict.parse(gz_taf.read())
         try:
             data = data['response']['data']['TAF']
         except KeyError:
             raise BadResponseError("Invalid Response from aviationweather.gov")
+        except EOFError:
+            log.error("EOF Error from Gzip Stream on TAF. Ignoring")
+            return
         for t in data:
             taf = self._parse_taf(t)
             try:
