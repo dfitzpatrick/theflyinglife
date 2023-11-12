@@ -138,8 +138,8 @@ class ADDSPolling:
                     #await polling_file.callback(polling_file, **kwargs)
                 # Quick fix to just poll cache files on delay due to aviationweather.gov change 10/16/23
                 await polling_file.callback(polling_file, **kwargs)
-        except:
-            raise
+        except Exception as e:
+            log.error(e,exc_info=True)
             self.last_polling_succeeded = False
             await asyncio.sleep(60)
             await self._poll(**kwargs)
