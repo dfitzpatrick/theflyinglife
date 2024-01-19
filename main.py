@@ -61,5 +61,8 @@ async def startup_event():
     dtpp_service.register_callback(on_dtpp_change)
     dtpp_service.start()
 
-
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app)
+    
 

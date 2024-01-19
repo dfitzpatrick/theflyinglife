@@ -14,13 +14,18 @@ import logging
 log = logging.getLogger(__name__)
 
 class DTPPVersionFile:
-    def __init__(self, cached_files_path: pathlib.Path, from_date = datetime.utcnow()):
+    def __init__(self, cached_files_path: pathlib.Path, from_date = datetime.utcnow(), override_version: Optional[int] = None):
         self._cached_files_path = cached_files_path
         self._from_date = from_date
         self._remote_path = "https://aeronav.faa.gov/d-tpp/{version_date}/xml_data/d-tpp_Metafile.xml"
-        self.value = int(self._from_date.strftime("%y%m"))
+        if override_version:
+            self.value = override_version
+        else:
+            self.value = int(self._from_date.strftime("%y%m"))
         self.file_path = self._cached_files_path / f"DTPP_{self.value}.xml"
         self.file_exists = self.file_path.exists()
+        self.month_value = int(str(self.value)[2:])
+        self.year_value = int(str(self.value)[:2])
 
 
     @property
@@ -36,7 +41,11 @@ class DTPPVersionFile:
             cached_files_path=self._cached_files_path,
             from_date=self._from_date + dateutil.relativedelta.relativedelta(months=1)
         )
-
+    def override_version(self, number: int) -> 'DTPPVersionFile':
+        return self.__class__(
+            cached_files_path=self._cached_files_path,
+            override_version=number
+        )
     def read_header(self) -> Optional[DTPPHeader]:
         return get_dtpp_header(self.file_path)
 
@@ -141,17 +150,33 @@ class DTPPService:
             next_polling_seconds = (header.valid_to - now).total_seconds() + 10
             await asyncio.sleep(next_polling_seconds)
 
+    def header_is_valid(self, version: DTPPVersionFile):
+        header = version.read_header()
+        return header and header.is_valid
+    
     async def seek_valid_version(self):
         version = self.version
         for i in range(2):
             if not version.file_exists:
                 await version.fetch_and_save()
-            header = version.read_header()
-            if header and header.is_valid:
+            if self.header_is_valid(version):
                 return version
             else:
                 now = datetime.now(timezone.utc)
+                header = version.read_header()
                 version = version.next if now > header.valid_to else version.previous
+                if self.header_is_valid(version):
+                    return version
+                elif version.month_value == 12:
+                    # Some times it may go off a 13 month year. Test for this before raising an error
+                    override_version = int(f"{version.year_value}13")
+                    version = version.override_version(override_version)
+                    try:
+                        await version.fetch_and_save()
+                        if self.header_is_valid(version):
+                            return version
+                    except aiohttp.ClientResponseError:
+                        continue              
         raise RuntimeError("No Valid version found")
 
     def start(self):

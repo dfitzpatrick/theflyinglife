@@ -5,3 +5,7 @@ __pycache__/
 run/
 *.py[cod]
 *$py.class
+tfl.log
+data/DTPP_2313.xml
+data/DTPP_2401.xml
+.gitignore
