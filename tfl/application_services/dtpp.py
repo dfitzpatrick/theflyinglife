@@ -107,8 +107,13 @@ class DTPPService:
         return DTPPVersionFile(cached_files_path=self.cached_files_path)
 
     def get_version(self, version: Union[int, str]) -> DTPPVersionFile:
-        dt = datetime.strptime(str(version), "%y%m")
-        return DTPPVersionFile(cached_files_path=self.cached_files_path, from_date=dt)
+        try:
+            dt = datetime.strptime(str(version), "%y%m")
+            version_file = DTPPVersionFile(cached_files_path=self.cached_files_path, from_date=dt)
+        except ValueError:
+            # Unstandard 13 period
+            version_file = DTPPVersionFile(cached_files_path=self.cached_files_path, override_version=int(version))
+        return version_file
 
 
     @property
