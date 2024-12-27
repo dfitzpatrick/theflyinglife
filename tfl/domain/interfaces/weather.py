@@ -36,6 +36,10 @@ class IMetarRepository(ABC):
     async def delete(self, metar: Metar) -> None:
         pass
 
+    @abstractmethod
+    async def longest_metars(self, max_number: int) -> list[Metar]:
+        pass
+
 
 class ITAFRepository(ABC):
 

@@ -170,12 +170,15 @@ class DTPPService:
                 now = datetime.now(timezone.utc)
                 header = version.read_header()
                 version = version.next if now > header.valid_to else version.previous
+                log.debug(f"Else version is: {version.file_path}")
                 if self.header_is_valid(version):
+                    log.debug("shows as valid")
                     return version
-                elif version.month_value == 12:
+                elif version.previous.month_value == 12:
                     # Some times it may go off a 13 month year. Test for this before raising an error
-                    override_version = int(f"{version.year_value}13")
+                    override_version = int(f"{version.previous.year_value}13")
                     version = version.override_version(override_version)
+                    log.debug(f"trying {version.file_path}")
                     try:
                         await version.fetch_and_save()
                         if self.header_is_valid(version):

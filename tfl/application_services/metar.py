@@ -55,6 +55,9 @@ class MetarService:
         except EntityNotFoundError:
             return
 
+    async def find_longest_metars(self, max_number: int) -> list[Metar]:
+        return await self._repo.longest_metars(max_number)
+
     async def _file_updated(self, polling_file: PollingFile):
         gz = await self._fetch_metar(polling_file.filename)
         await self._parse_metar_gzip(gz)
@@ -66,8 +69,9 @@ class MetarService:
             return GzipFile(fileobj=data)
 
     async def _parse_metar_gzip(self, gz_metar: GzipFile):
-        data = xmltodict.parse(gz_metar.read())
+       
         try:
+            data = xmltodict.parse(gz_metar.read())
             data = data['response']['data']['METAR']
         except KeyError:
             raise BadResponseError("Invalid Response from aviationweather.gov")

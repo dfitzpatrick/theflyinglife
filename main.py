@@ -35,9 +35,10 @@ logging.basicConfig(
 logging.getLogger('asyncio').setLevel(logging.ERROR)
 log = logging.getLogger(__name__)
 
-
+SENTRY_DEBUG = "https://9ccd59ca785c29ad20b03b781759c3e1@o391198.ingest.us.sentry.io/4507937915207680"
+SENTRY_PROD = "https://06c72edd1f1e4108b6ca0cd2627283dd@o391198.ingest.sentry.io/5892190"
 sentry_sdk.init(
-    "https://06c72edd1f1e4108b6ca0cd2627283dd@o391198.ingest.sentry.io/5892190",
+    SENTRY_DEBUG,
 
     # Set traces_sample_rate to 1.0 to capture 100%
     # of transactions for performance monitoring.

@@ -36,6 +36,8 @@ class MetarRepository(IMetarRepository):
         except KeyError:
             raise EntityNotFoundError(f"{icao} not found.")
 
+    async def longest_metars(self, max_number: int) -> list[Metar]:
+        return sorted(self.repo.values(), key=lambda metar: len(metar.raw_text), reverse=True)[:max_number]
 
 class MetarRedisRepository(IMetarRepository):
 

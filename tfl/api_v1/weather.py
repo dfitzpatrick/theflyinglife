@@ -14,6 +14,10 @@ async def metar_get(icao: str):
     metar = await metar_service.metar(icao)
     return metar
 
+@router.get('/metar')
+async def metar_qs(longest: int):
+    metars = await metar_service.find_longest_metars(longest)
+    return metars
 
 @router.get("/taf/{icao}")
 async def taf_get(icao: str):
