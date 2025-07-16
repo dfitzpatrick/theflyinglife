@@ -6,7 +6,7 @@ from tfl.application_services.metar import MetarService
 from tfl.application_services.taf import TafService
 from tfl.infrastructure.airport import AirportRepository
 from tfl.infrastructure.member import InMemoryMemberRepository
-from tfl.infrastructure.metar import MetarRepository, MetarRedisRepository
+from tfl.infrastructure.metar import MetarRepository
 from tfl.infrastructure.taf import TAFRepository
 from passlib.context import CryptContext
 from .configuration import DATA_DIR
