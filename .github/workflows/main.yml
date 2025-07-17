@@ -1,0 +1,24 @@
+name: Test UV FastAPI App
+on:
+  push:
+    branches:
+    - master
+jobs:
+  build:
+    name: python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv tool
+        uses: astral-sh/setupuv@v6
+        with:
+          version: "0.7.21"
+      - name: Setup python environment
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      - name: Setting up Project
+        run: uv sync --locked --all-extras --dev
+      - name: Run tests
+        run: uv run pytest tests
+          
