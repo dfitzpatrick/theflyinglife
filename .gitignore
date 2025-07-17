@@ -3,6 +3,8 @@
 .pytest_cache/
 __pycache__/
 run/
+data/
+!data/airports.json
 *.py[cod]
 *$py.class
 tfl.log

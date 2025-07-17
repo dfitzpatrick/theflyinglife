@@ -1,7 +1,4 @@
 from typing import Dict, Optional
-
-from pydantic import BaseModel
-
 from tfl.domain.exceptions import EntityExistsError
 from tfl.domain.facilities import Airport
 from tfl.domain.interfaces.facility import IAirportRepository
@@ -21,7 +18,7 @@ class AirportService:
                 self._repo.update(airport)
 
     def get_airport(self, icao) -> Optional[Airport]:
-        return await self._repo.find(icao)
+        return self._repo.find(icao)
 
 
 
