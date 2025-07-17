@@ -55,7 +55,7 @@ app.mount("/static", StaticFiles(directory="./tfl/site/static"), name="static")
 
 @app.on_event("startup")
 async def startup_event():
-    log.info("Starting Metar/TAF Pollers")
+    log.info("Starting Metar/TAF Pollers now")
     await metar_service.poller.start()
     await taf_service.poller.start()
     log.info("Starting DTPP Service")
