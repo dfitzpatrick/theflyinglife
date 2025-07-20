@@ -4,7 +4,7 @@ on:
     branches:
     - master
 jobs:
-  build:
+  test:
     name: python
     runs-on: ubuntu-latest
     steps:
@@ -21,4 +21,24 @@ jobs:
         run: uv sync --locked --all-extras --dev
       - name: Run tests
         run: uv run pytest tests
+  deploy:
+    name: Deploy to DigitalOcean
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: SSH and git pull on droplet
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          port: 22
+          script: |
+            cd /home/tfl
+            ./tfl_update
+
+
           

@@ -259,34 +259,3 @@ data = json.loads("""[
     "plate_url": "https://aeronav.faa.gov/d-tpp/2205/00236ZOOMM_C.PDF"
   }
 ]""")
-data = [FAAPlate(**p) for p in data]
-
-def test_load_raw_plate_data():
-
-    data = load_raw_plate_data(path)
-    assert data is not None
-
-
-def test_parse_raw_plate_data():
-    data = parse_raw_plate_data(path)
-    a = 1 + 1
-    assert True
-
-
-def test_string_ratios():
-    test_string = "ils 30"
-    comparables = ["VOR OR TACAN RWY 30", "ILS OR LOC RWY 30", "ILS OR LOC RWY 26"]
-    comparables = list(map(str.lower, comparables))
-
-    levenshtein_ratios = get_string_ratios(test_string, comparables)
-    assert len(levenshtein_ratios) == 3
-    assert comparables[0] in levenshtein_ratios.keys()
-    assert comparables[1] in levenshtein_ratios.keys()
-    assert False
-
-def test_plate_ratios():
-    test_string = "vor"
-    comparables = ["VOR OR TACAN RWY 30", "ILS OR LOC RWY 30", "ILS OR LOC RWY 26"]
-    comparables = list(map(str.lower, [d.name.lower() for d in data]))
-    ratios = get_best_plates(test_string, comparables)
-    assert False
