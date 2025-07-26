@@ -11,8 +11,8 @@ import os
 import sys
 from logging import StreamHandler, FileHandler
 import logging
-from tfl.instances import dtpp_service
-from tfl.application_services.dcs import NoChartSupplementError
+from tfl.instances import dtpp_service, dcs_path
+from tfl.application_services.dcs import NoChartSupplementError, start_polling_dcs
 from fastapi.responses import JSONResponse
 
 BASE_DIR = os.path.normpath(os.path.dirname(os.path.realpath(__file__)))
@@ -63,6 +63,7 @@ async def startup_event():
     log.info("Starting DTPP Service")
     dtpp_service.register_callback(on_dtpp_change)
     dtpp_service.start()
+    start_polling_dcs(dcs_path)
 
 @app.exception_handler(NoChartSupplementError)
 async def handle_no_chart_supplement(request, exc):

@@ -10,7 +10,6 @@ from tfl.infrastructure.metar import MetarRepository
 from tfl.infrastructure.taf import TAFRepository
 from passlib.context import CryptContext
 from .configuration import DATA_DIR
-from tfl.application_services.dcs import start_polling_dcs
 import pathlib
 import logging
 
@@ -26,6 +25,5 @@ member_service = MemberService(member_repository, password_handler)
 auth_service = AuthService(member_repository, password_handler)
 airport_repository = AirportRepository()
 dtpp_service = DTPPService(DATA_DIR)
-_path = (pathlib.Path(__file__).parents[1] / 'data').resolve()
-dcs_service = ChartSupplementService(_path)
-start_polling_dcs(_path)
+dcs_path = (pathlib.Path(__file__).parents[1] / 'data').resolve()
+dcs_service = ChartSupplementService(dcs_path)
