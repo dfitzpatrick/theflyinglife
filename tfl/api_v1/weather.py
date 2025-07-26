@@ -1,11 +1,12 @@
 from typing import Optional, List
 
 from fastapi.routing import APIRouter
+from fastapi.responses import Response
 
 from tfl.domain.facilities import FAAPlate
 from tfl.domain.services.weather import get_best_plates
-from tfl.instances import metar_service, taf_service, airport_repository
-
+from tfl.instances import metar_service, taf_service, airport_repository, dcs_service
+import io
 router = APIRouter()
 
 
@@ -51,5 +52,14 @@ async def plates_get(icao: str, name: Optional[str] = None) -> List[FAAPlate]:
         return plates
     return [p for p in plates if name.lower() in p.name.lower()]
 
-
+@router.get('/dcs/{icao}')
+async def dcs_get(icao: str) -> list[io.BytesIO]:
+    zip = dcs_service.get_as_zip(icao)
+    return Response(
+        zip.getvalue(),
+        media_type='application/x-zip-compressed',
+        headers={
+            "Content-Disposition": "attachment; filename=pages.zip"
+        }
+    )
 

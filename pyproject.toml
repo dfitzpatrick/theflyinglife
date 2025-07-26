@@ -24,6 +24,7 @@ dependencies = [
     "pydantic-forms",
     "fuzzywuzzy>=0.18.0",
     "python-levenshtein>=0.27.1",
+    "pypdf>=5.8.0",
 ]
 
 [dependency-groups]

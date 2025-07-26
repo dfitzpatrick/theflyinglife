@@ -577,6 +577,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "pypdf"
+version = "5.8.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/28/5a/139b1a3ec3789cc77a7cb9d5d3bc9e97e742e6d03708baeb7719f8ad0827/pypdf-5.8.0.tar.gz", hash = "sha256:f8332f80606913e6f0ce65488a870833c9d99ccdb988c17bb6c166f7c8e140cb", size = 5029494, upload-time = "2025-07-13T12:51:35.125Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8b/94/05d0310bfa92c26aa50a9d2dea2c6448a1febfdfcf98fb340a99d48a3078/pypdf-5.8.0-py3-none-any.whl", hash = "sha256:bfe861285cd2f79cceecefde2d46901e4ee992a9f4b42c56548c4a6e9236a0d1", size = 309718, upload-time = "2025-07-13T12:51:33.159Z" },
+]
+
+[[package]]
 name = "pytest"
 version = "7.4.4"
 source = { registry = "https://pypi.org/simple" }
@@ -748,6 +760,7 @@ dependencies = [
     { name = "passlib", extra = ["bcrypt"] },
     { name = "pydantic", extra = ["email"] },
     { name = "pydantic-forms" },
+    { name = "pypdf" },
     { name = "pytest" },
     { name = "python-dateutil" },
     { name = "python-levenshtein" },
@@ -771,6 +784,7 @@ requires-dist = [
     { name = "passlib", extras = ["bcrypt"], specifier = ">=1.7.4,<2" },
     { name = "pydantic", extras = ["email"], specifier = ">=1.9.0,<2" },
     { name = "pydantic-forms", git = "https://github.com/dfitzpatrick/pydantic-forms" },
+    { name = "pypdf", specifier = ">=5.8.0" },
     { name = "pytest", specifier = ">=7.1.1,<8" },
     { name = "python-dateutil", specifier = ">=2.8.2,<3" },
     { name = "python-levenshtein", specifier = ">=0.27.1" },

@@ -12,6 +12,8 @@ import sys
 from logging import StreamHandler, FileHandler
 import logging
 from tfl.instances import dtpp_service
+from tfl.application_services.dcs import NoChartSupplementError
+from fastapi.responses import JSONResponse
 
 BASE_DIR = os.path.normpath(os.path.dirname(os.path.realpath(__file__)))
 
@@ -61,6 +63,14 @@ async def startup_event():
     log.info("Starting DTPP Service")
     dtpp_service.register_callback(on_dtpp_change)
     dtpp_service.start()
+
+@app.exception_handler(NoChartSupplementError)
+async def handle_no_chart_supplement(request, exc):
+    return JSONResponse(
+        status_code=404,
+        content={"error": "Chart Supplement not found"},
+
+    )
 
 if __name__ == "__main__":
     import uvicorn
