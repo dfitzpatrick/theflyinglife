@@ -48,7 +48,7 @@ def test_ingest_xml():
             name='LONG BEACH (DAUGHERTY FLD)',
             city='LONG BEACH',
             navid_name=None,
-            pages=['sw_195_12JUN2025.pdf', 'sw_LGB_notices_12JUN2025.pdf']
+            files=['sw_195_12JUN2025.pdf', 'sw_LGB_notices_12JUN2025.pdf']
         )
     }
     airports = _ingest_xml(sample_xml)
@@ -56,7 +56,7 @@ def test_ingest_xml():
     assert isinstance(airports, dict)
     assert 'LGB' in airports
     assert airports['LGB'].name == 'LONG BEACH (DAUGHERTY FLD)'
-    assert len(airports['LGB'].pages) == 2
+    assert len(airports['LGB'].files) == 2
 
 def test_editions_available():
     path = Path('/foo')
