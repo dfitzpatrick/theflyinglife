@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from typing import Generator
 import os
 from tfl import pdf
+import aiofiles
 
 log = logging.getLogger(__name__)
 _start_date = date(2025, 2, 20)
@@ -42,17 +43,20 @@ def get_schedule(query_date: date, offset = 0) -> date:
     key_date = _start_date + timedelta(days=56 * cycle)
     return key_date
 
-async def download_dcs(edition_date: date) -> io.BytesIO:
+async def download_dcs(edition_date: date, path: str) -> str:
     url = _download_mapping[edition_date]
+    fn = _folder_fmt.format(edition_date=date_to_string(edition_date)) + ".zip"
     async with aiohttp.ClientSession(raise_for_status=True) as session:
         async with session.get(url) as response:
-            data = await response.read()
-            return io.BytesIO(data)
+            async with aiofiles.open(path / fn, 'wb') as f:
+                async for chunk in response.content.iter_chunked(1024*4):
+                    await f.write(chunk)
+    return path / fn
 
 
-def catalogue_dcs(base_dir: pathlib.Path, dcs_data: io.BytesIO):
+def catalogue_dcs(base_dir: pathlib.Path, dcs_zip: pathlib.Path):
     # FAA is random with filename case for each file. Standardize
-    with ZipFile(dcs_data) as z:
+    with ZipFile(dcs_zip) as z:
         for member in z.namelist():
             target_path = base_dir / member.lower()
             # Ensure parent directories exist
@@ -73,15 +77,22 @@ def editions_available(path, query_date: date = date.today()) -> Generator[date,
         yield next
     
 async def _poll(path: pathlib.Path):
-    query = date.today()
-    prior_path = _edition_path(get_schedule(query, offset=-1), path)
-    for edition_date in editions_available(path):
-        zip_data = await download_dcs(edition_date)
-        _subfolder = _folder_fmt.format(edition_date=date_to_string(edition_date))
-        catalogue_dcs(path / _subfolder, zip_data)
+    while True:
+        log.info("Polling for DCS updates")
+        query = date.today()
+        prior_path = _edition_path(get_schedule(query, offset=-1), path)
+        for edition_date in editions_available(path):
+            log.info(f"Downloading DCS {date_to_string(edition_date)}")
+            zip_path = await download_dcs(edition_date, path)
+            _subfolder = _folder_fmt.format(edition_date=date_to_string(edition_date))
+            catalogue_dcs(path / _subfolder, zip_path)
+            os.remove(zip_path)
+        if prior_path.exists():
+            shutil.rmtree(prior_path)
+        
+        await asyncio.sleep(86400)
 
-    if prior_path.exists():
-        shutil.rmtree(prior_path)
+    
 
     
 def _dcs_task_done(task: asyncio.Task):
