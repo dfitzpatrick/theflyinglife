@@ -14,6 +14,11 @@ import logging
 from tfl.instances import dtpp_service, dcs_path
 from tfl.application_services.dcs import NoChartSupplementError, start_polling_dcs
 from fastapi.responses import JSONResponse
+from tfl.api_v2.metars import router as metars_router
+from tfl.api_v2.dcs import router as dcs_router
+from tfl.api_v2.tafs import router as tafs_router
+from tfl.api_v2.procedures import router as procedures_router
+from tfl.exception_handlers import init_exception_handlers
 
 BASE_DIR = os.path.normpath(os.path.dirname(os.path.realpath(__file__)))
 
@@ -52,7 +57,12 @@ sentry_sdk.init(
 app = FastAPI(routes=static_page_routes, middleware=installed_middleware)
 
 app.include_router(weather_router, prefix='/api/v1')
+app.include_router(metars_router, prefix='/api/v2')
+app.include_router(tafs_router, prefix='/api/v2')
+app.include_router(dcs_router, prefix='/api/v2')
+app.include_router(procedures_router, prefix='/api/v2')
 app.mount("/static", StaticFiles(directory="./tfl/site/static"), name="static")
+init_exception_handlers(app)
 
 
 @app.on_event("startup")
@@ -65,13 +75,6 @@ async def startup_event():
     dtpp_service.start()
     start_polling_dcs(dcs_path)
 
-@app.exception_handler(NoChartSupplementError)
-async def handle_no_chart_supplement(request, exc):
-    return JSONResponse(
-        status_code=404,
-        content={"error": "Chart Supplement not found"},
-
-    )
 
 if __name__ == "__main__":
     import uvicorn

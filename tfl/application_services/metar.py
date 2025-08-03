@@ -54,7 +54,7 @@ class MetarService:
             return await self._repo.find(icao)
         except EntityNotFoundError:
             return
-
+    
     async def find_longest_metars(self, max_number: int) -> list[Metar]:
         return await self._repo.longest_metars(max_number)
 
