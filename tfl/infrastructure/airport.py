@@ -36,7 +36,11 @@ def enforce_list(item):
 def parse_raw_plate_data(path: pathlib.Path) -> Dict[str, List[FAAPlate]]:
     container = {}
     d = load_raw_plate_data(path)
-    cycle = d['digital_tpp']['@Cycle']
+    cycle = d['digital_tpp'].get('@Cycle')
+    if cycle is None:
+        # wtf FAA
+        cycle = d['digital_tpp']['@cycle']
+    
     for state_obj in enforce_list(d['digital_tpp']['state_code']):
         for city in enforce_list(state_obj['city_name']):
             airport = city['airport_name']

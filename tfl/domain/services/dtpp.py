@@ -18,8 +18,12 @@ def get_dtpp_header(path: pathlib.Path) -> Optional[DTPPHeader]:
     try:
         for _, elem in ET.iterparse(path, events=("start", "end")):
             if elem.tag == 'digital_tpp':
+                cycle = elem.attrib.get('Cycle')
+                if cycle is None:
+                    # wtf faa
+                    cycle = elem.attrib['cycle']
                 return DTPPHeader(
-                    cycle=elem.attrib['Cycle'],
+                    cycle=cycle,
                     valid_from=convert_dtpp_date(elem.attrib['from_edate']),
                     valid_to=convert_dtpp_date(elem.attrib['to_edate']),
                 )
